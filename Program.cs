@@ -42,9 +42,7 @@ namespace UpdatePfSenseCerts
 		static void Main(string[] args)
 		{
 			var exePath = System.Reflection.Assembly.GetEntryAssembly().Location;
-			var configPath =
-				args.Length >= 1 ? args[0] :
-				Path.Combine(Path.GetDirectoryName(exePath), "config.json");
+			var configPath = args.Length >= 1 ? args[0] : Path.Combine(Path.GetDirectoryName(exePath), "config.json");
 			config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configPath));
 
 			Console.WriteLine($"Updating SSL certificates on '{config.PfUrl}'.");
