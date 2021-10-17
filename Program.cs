@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace UpdatePfSenseCerts
@@ -16,6 +17,13 @@ namespace UpdatePfSenseCerts
 		public string PfUrl { get; set; }
 		public string CertFile { get; set; }
 		public string KeyFile { get; set; }
+	}
+
+	sealed class NoCheckCertificatePolicy : ICertificatePolicy
+	{
+		public bool CheckValidationResult(
+			ServicePoint srvPoint, X509Certificate certificate, WebRequest request, int certificateProblem) =>
+			true;
 	}
 
 	static class Program
@@ -49,8 +57,7 @@ namespace UpdatePfSenseCerts
 			Console.WriteLine($"Cert file: {config.CertFile}");
 			Console.WriteLine($"Key file: {config.KeyFile}");
 
-			ServicePointManager.ServerCertificateValidationCallback =
-				(sender, certificate, chain, sslPolicyErrors) => true;
+			ServicePointManager.CertificatePolicy = new NoCheckCertificatePolicy();
 
 			var certFile = File.ReadAllBytes(config.CertFile);
 			var keyFile = File.ReadAllBytes(config.KeyFile);
